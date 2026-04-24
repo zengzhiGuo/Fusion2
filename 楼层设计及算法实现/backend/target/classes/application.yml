@@ -1,0 +1,47 @@
+server:
+  port: 8083
+  address: 0.0.0.0
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: floor-design
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ship_floor?sslMode=REQUIRED&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.building.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+upload:
+  base-path: D:/uploads
+
+maps:
+  static-path: ../frontend/maps
+
+logging:
+  level:
+    com.building: debug

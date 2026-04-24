@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ship.mapper.RegionCoordinateMapper">
+
+    <resultMap id="RegionCoordinateResult" type="com.ship.entity.RegionCoordinateEntity">
+        <id property="coordId" column="coord_id"/>
+        <result property="regionId" column="region_id"/>
+        <result property="pointOrder" column="point_order"/>
+        <result property="xCoordinate" column="x_coordinate"/>
+        <result property="yCoordinate" column="y_coordinate"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectByRegionId" resultMap="RegionCoordinateResult">
+        SELECT coord_id, region_id, point_order, x_coordinate, y_coordinate, created_at
+        FROM region_coordinates 
+        WHERE region_id = #{regionId}
+        ORDER BY point_order ASC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO region_coordinates (region_id, point_order, x_coordinate, y_coordinate)
+        VALUES (#{regionId}, #{pointOrder}, #{xCoordinate}, #{yCoordinate})
+    </insert>
+
+    <insert id="batchInsert">
+        INSERT INTO region_coordinates (region_id, point_order, x_coordinate, y_coordinate)
+        VALUES
+        <foreach collection="coordinates" item="coord" separator=",">
+            (#{coord.regionId}, #{coord.pointOrder}, #{coord.xCoordinate}, #{coord.yCoordinate})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRegionId">
+        DELETE FROM region_coordinates WHERE region_id = #{regionId}
+    </delete>
+
+</mapper>

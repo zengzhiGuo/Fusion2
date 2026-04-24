@@ -1,0 +1,14 @@
+# 表名: maps
+# 导出时间: 2026-04-16 15:40:04
+# 记录数量: 8
+#===============================================================================
+
+map_id	region_name	image_path	ship_length_m	ship_width_m	image_width_px	image_height_px
+floor1	A甲板	maps/1层.png	30.000	20.000	1487	910
+floor2	B甲板	maps/2层.png	30.000	20.000	1289	789
+floor3	C甲板	maps/3层.png	30.000	20.000	1138	739
+floor5	桥楼甲板	maps/5层.png	30.000	20.000	519	570
+underg1	机舱下平台	maps/机舱下平台.png	30.000	20.000	999	999
+underg2	机舱上平台	maps/机舱上平台.png	30.000	20.000	999	999
+underg3	机舱底部	maps/机舱底部.png	30.000	20.000	999	999
+floor4	D甲板	maps/4层.png	30.000	20.000	NULL	NULL

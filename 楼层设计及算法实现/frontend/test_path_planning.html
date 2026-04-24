@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路径规划测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .steps {
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .step-number {
+            background: #4CAF50;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .step-floor {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .step-distance {
+            color: #4CAF50;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .waypoint {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .waypoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-remove {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-add-waypoint {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ 路径规划测试</h1>
+        <p class="subtitle">测试Python后端路径规划API</p>
+
+        <div class="section">
+            <div class="section-title">起点</div>
+            <div class="form-group">
+                <label>楼层</label>
+                <select id="startFloor">
+                    <option value="floor1">楼层1 (A甲板)</option>
+                    <option value="floor2">楼层2 (B甲板)</option>
+                    <option value="floor3">楼层3 (C甲板)</option>
+                    <option value="floor4">楼层4 (D甲板)</option>
+                    <option value="floor5">楼层5 (桥楼甲板)</option>
+                    <option value="underg2">机舱上平台</option>
+                    <option value="underg1">机舱下平台</option>
+                    <option value="underg3">机舱底部</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>坐标 (米)</label>
+                <div class="input-row">
+                    <input type="number" id="startX" placeholder="X坐标" value="22.4460" step="0.01">
+                    <input type="number" id="startY" placeholder="Y坐标" value="13.4433" step="0.01">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">途经点 (可选)</div>
+            <div id="waypointsContainer"></div>
+            <button class="btn-add-waypoint" onclick="addWaypoint()">+ 添加途经点</button>
+        </div>
+
+        <div class="section">
+            <div class="section-title">终点</div>
+            <div class="form-group">
+                <label>楼层</label>
+                <select id="endFloor">
+                    <option value="floor1">楼层1 (A甲板)</option>
+                    <option value="floor2" selected>楼层2 (B甲板)</option>
+                    <option value="floor3">楼层3 (C甲板)</option>
+                    <option value="floor4">楼层4 (D甲板)</option>
+                    <option value="floor5">楼层5 (桥楼甲板)</option>
+                    <option value="underg2">机舱上平台</option>
+                    <option value="underg1">机舱下平台</option>
+                    <option value="underg3">机舱底部</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>坐标 (米)</label>
+                <div class="input-row">
+                    <input type="number" id="endX" placeholder="X坐标" value="21.1138" step="0.01">
+                    <input type="number" id="endY" placeholder="Y坐标" value="12.9260" step="0.01">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="planPath()" id="planBtn">
+            开始规划路径
+        </button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let waypointCount = 0;
+
+        function addWaypoint() {
+            waypointCount++;
+            const container = document.getElementById('waypointsContainer');
+            const waypoint = document.createElement('div');
+            waypoint.className = 'waypoint';
+            waypoint.id = `waypoint-${waypointCount}`;
+            waypoint.innerHTML = `
+                <div class="waypoint-header">
+                    <strong>途经点 ${waypointCount}</strong>
+                    <button class="btn-remove" onclick="removeWaypoint(${waypointCount})">删除</button>
+                </div>
+                <div class="form-group">
+                    <label>楼层</label>
+                    <select id="wp${waypointCount}Floor">
+                        <option value="floor1" selected>楼层1 (A甲板)</option>
+                        <option value="floor2">楼层2 (B甲板)</option>
+                        <option value="floor3">楼层3 (C甲板)</option>
+                        <option value="floor4">楼层4 (D甲板)</option>
+                        <option value="floor5">楼层5 (桥楼甲板)</option>
+                        <option value="underg2">机舱上平台</option>
+                        <option value="underg1">机舱下平台</option>
+                        <option value="underg3">机舱底部</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>坐标 (米)</label>
+                    <div class="input-row">
+                        <input type="number" id="wp${waypointCount}X" placeholder="X坐标" value="22.1582" step="0.01">
+                        <input type="number" id="wp${waypointCount}Y" placeholder="Y坐标" value="6.4752" step="0.01">
+                    </div>
+                </div>
+            `;
+            container.appendChild(waypoint);
+        }
+
+        function removeWaypoint(id) {
+            const waypoint = document.getElementById(`waypoint-${id}`);
+            if (waypoint) {
+                waypoint.remove();
+            }
+        }
+
+        async function planPath() {
+            const btn = document.getElementById('planBtn');
+            const resultDiv = document.getElementById('result');
+            
+            btn.disabled = true;
+            btn.textContent = '规划中...';
+            resultDiv.innerHTML = '<div class="loading">正在规划路径...</div>';
+
+            try {
+                // 获取起点
+                const start = {
+                    x: parseFloat(document.getElementById('startX').value),
+                    y: parseFloat(document.getElementById('startY').value),
+                    map_id: document.getElementById('startFloor').value
+                };
+
+                // 获取终点
+                const end = {
+                    x: parseFloat(document.getElementById('endX').value),
+                    y: parseFloat(document.getElementById('endY').value),
+                    map_id: document.getElementById('endFloor').value
+                };
+
+                // 获取途经点
+                const waypoints = [];
+                const waypointElements = document.querySelectorAll('.waypoint');
+                waypointElements.forEach((wp, index) => {
+                    const id = wp.id.replace('waypoint-', '');
+                    const x = document.getElementById(`wp${id}X`);
+                    const y = document.getElementById(`wp${id}Y`);
+                    const floor = document.getElementById(`wp${id}Floor`);
+                    
+                    if (x && y && floor) {
+                        waypoints.push({
+                            x: parseFloat(x.value),
+                            y: parseFloat(y.value),
+                            map_id: floor.value
+                        });
+                    }
+                });
+
+                // 选择API
+                let url, data;
+                if (waypoints.length === 0) {
+                    url = 'http://localhost:5000/api/plan_path';
+                    data = { start, end };
+                } else {
+                    url = 'http://localhost:5000/api/plan_multi_waypoint_path';
+                    data = { start, waypoints, end };
+                }
+
+                // 发送请求
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayResult(result);
+                } else {
+                    displayError(result.error || '路径规划失败');
+                }
+            } catch (error) {
+                console.error('请求失败:', error);
+                displayError('网络请求失败: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '开始规划路径';
+            }
+        }
+
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            
+            let stepsHtml = '';
+            result.steps.forEach(step => {
+                stepsHtml += `
+                    <div class="step">
+                        <div class="step-number">${step.step_number}</div>
+                        <div class="step-content">
+                            <span class="step-floor">[${step.floor}]</span>
+                            ${step.action} - ${step.location}
+                            <span class="step-distance">${step.distance.toFixed(2)}m</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultDiv.innerHTML = `
+                <div class="result">
+                    <div class="result-title">✅ 路径规划成功</div>
+                    <div class="result-item">
+                        <span class="result-label">总距离</span>
+                        <span class="result-value">${result.total_distance.toFixed(2)} 米</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">经过楼层</span>
+                        <span class="result-value">${result.floors.join(' → ')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">步骤数量</span>
+                        <span class="result-value">${result.steps.length} 步</span>
+                    </div>
+                    <div class="steps">
+                        <div class="result-title">详细步骤</div>
+                        ${stepsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="error">
+                    ❌ ${message}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

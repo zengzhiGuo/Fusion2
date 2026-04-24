@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ship.mapper.RegionGridCellMapper">
+
+    <resultMap id="RegionGridCellResult" type="com.ship.entity.RegionGridCellEntity">
+        <id property="id" column="id"/>
+        <result property="regionId" column="region_id"/>
+        <result property="mapId" column="map_id"/>
+        <result property="gridX" column="grid_x"/>
+        <result property="gridY" column="grid_y"/>
+        <result property="centerX" column="center_x"/>
+        <result property="centerY" column="center_y"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectByRegionId" resultMap="RegionGridCellResult">
+        SELECT id, region_id, map_id, grid_x, grid_y, center_x, center_y, created_at
+        FROM region_grid_cells
+        WHERE region_id = #{regionId}
+        ORDER BY grid_y ASC, grid_x ASC
+    </select>
+
+    <select id="selectByMapId" resultMap="RegionGridCellResult">
+        SELECT id, region_id, map_id, grid_x, grid_y, center_x, center_y, created_at
+        FROM region_grid_cells
+        WHERE map_id = #{mapId}
+        ORDER BY region_id ASC, grid_y ASC, grid_x ASC
+    </select>
+
+    <insert id="batchInsert">
+        INSERT INTO region_grid_cells (region_id, map_id, grid_x, grid_y, center_x, center_y)
+        VALUES
+        <foreach collection="cells" item="cell" separator=",">
+            (#{cell.regionId}, #{cell.mapId}, #{cell.gridX}, #{cell.gridY}, #{cell.centerX}, #{cell.centerY})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRegionId">
+        DELETE FROM region_grid_cells WHERE region_id = #{regionId}
+    </delete>
+
+</mapper>

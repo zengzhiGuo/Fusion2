@@ -1,0 +1,54 @@
+---
+description: 记录文档创建信息，按功能分类保存
+alwaysApply: false
+---
+
+# 文档创建记录规则
+
+## 触发时机
+
+每次创建新的代码文件时（前端、后端、算法等各类代码文件），自动记录创建信息。
+
+## 分类方式
+
+根据文件类型和路径，自动归类到以下分类：
+
+| 分类 | 匹配路径/类型 |
+|------|-------------|
+| Java后端 | `backend/`、`server/`、`src/main/`、`controller/`、`service/`、`entity/`、`dao/` 等 |
+| 前端 | `frontend/`、`src/`、`components/`、`views/`、`pages/`、`assets/` 等 |
+| Python算法 | `algorithm/`、`algo/`、`model/`、`train/`、`utils/` 等（Python文件） |
+| 其他 | 其他不属于上述分类的文件 |
+
+## 记录位置
+
+每个分类对应一个记录文件：
+
+- Java后端：`C:\Users\19534\Desktop\楼层设计及算法实现\docs\文档创建记录-后端.md`
+- 前端：`C:\Users\19534\Desktop\楼层设计及算法实现\docs\文档创建记录-前端.md`
+- Python算法：`C:\Users\19534\Desktop\楼层设计及算法实现\docs\文档创建记录-算法.md`
+- 其他：`C:\Users\19534\Desktop\楼层设计及算法实现\docs\文档创建记录-其他.md`
+
+## 记录格式
+
+```markdown
+## [系统时间]
+
+- **文件路径**：`文件完整路径`
+- **功能**：该文件的主要功能/用途
+- **说明**：简要描述
+```
+
+## 示例
+
+```markdown
+## 2026/04/13 14:30
+
+- **文件路径**：`backend/src/main/java/com/example/controller/FloorController.java`
+- **功能**：楼层管理控制器，处理楼层相关API请求
+- **说明**：提供楼层的增删改查接口
+```
+
+## 执行时机
+
+创建文件**后**，自动将以上信息追加到对应分类的记录文件中。

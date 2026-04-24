@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ship.mapper.RegionMapper">
+
+    <resultMap id="RegionResult" type="com.ship.entity.RegionEntity">
+        <id property="regionId" column="region_id"/>
+        <result property="regionName" column="region_name"/>
+        <result property="mapId" column="map_id"/>
+        <result property="description" column="description"/>
+        <result property="color" column="color"/>
+        <result property="fillOpacity" column="fill_opacity"/>
+        <result property="strokeWidth" column="stroke_width"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="RegionResult">
+        SELECT region_id, region_name, map_id, description, color, 
+               fill_opacity, stroke_width, is_active, created_at, updated_at
+        FROM regions 
+        WHERE is_active = true
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectById" resultMap="RegionResult">
+        SELECT region_id, region_name, map_id, description, color, 
+               fill_opacity, stroke_width, is_active, created_at, updated_at
+        FROM regions 
+        WHERE region_id = #{regionId}
+    </select>
+
+    <select id="selectByMapId" resultMap="RegionResult">
+        SELECT region_id, region_name, map_id, description, color, 
+               fill_opacity, stroke_width, is_active, created_at, updated_at
+        FROM regions 
+        WHERE map_id = #{mapId} AND is_active = true
+        ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO regions (region_id, region_name, map_id, description, color, 
+                           fill_opacity, stroke_width, is_active)
+        VALUES (#{regionId}, #{regionName}, #{mapId}, #{description}, #{color}, 
+                #{fillOpacity}, #{strokeWidth}, #{isActive})
+    </insert>
+
+    <update id="update">
+        UPDATE regions 
+        SET region_name = #{regionName},
+            map_id = #{mapId},
+            description = #{description},
+            color = #{color},
+            fill_opacity = #{fillOpacity},
+            stroke_width = #{strokeWidth},
+            is_active = #{isActive},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE region_id = #{regionId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM regions WHERE region_id = #{regionId}
+    </delete>
+
+</mapper>
